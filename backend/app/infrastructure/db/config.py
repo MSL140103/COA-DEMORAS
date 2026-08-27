@@ -10,5 +10,20 @@ class Settings(BaseSettings):
     storage_dir: str = "./var/storage"
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    @property
+    def normalized_database_url(self) -> str:
+        """Hosting providers (Render, Railway, etc.) typically hand out a bare
+        postgres://... or postgresql://... URL, which SQLAlchemy defaults to the
+        psycopg2 dialect for — but this project depends on psycopg (v3), not
+        psycopg2. Force the +psycopg driver regardless of what scheme we're
+        given, so LAYTIME_DATABASE_URL never has to be hand-edited per provider.
+        """
+        url = self.database_url
+        if url.startswith("postgres://"):
+            url = "postgresql://" + url[len("postgres://") :]
+        if url.startswith("postgresql://"):
+            url = "postgresql+psycopg://" + url[len("postgresql://") :]
+        return url
+
 
 settings = Settings()

@@ -15,7 +15,10 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    # No cookies/auth headers are used anywhere in MVP1, and the deployed frontend
+    # talks to this API same-origin through a server-side proxy anyway — CORS here
+    # only matters for direct API testing (curl, Swagger UI from another origin).
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -38,6 +38,27 @@ Comparison/Counter workflow, Rule Management UI, roles/permisos granulares.
   (`final_time_count_factor`) — la garantía de "no double deduction" es estructural,
   verificada activamente por `app/domain/timeline/integrity.py` en cada cálculo.
 
+## Abrirla sin instalar nada (Render)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/MSL140103/COA-DEMORAS)
+
+Este repo incluye [`render.yaml`](render.yaml), que describe los 3 servicios
+necesarios (Postgres + backend + frontend) para que Render los cree juntos. Pasos:
+
+1. Entra a [render.com](https://render.com) y crea una cuenta gratis (con GitHub,
+   sin descargar nada).
+2. Click en el botón de arriba, o desde el dashboard: **New +** → **Blueprint** →
+   selecciona el repo `MSL140103/COA-DEMORAS` → rama `claude/laytime-demurrage-system-tmbr5u`.
+3. Render detecta `render.yaml` y muestra los 3 servicios a crear (`laytime-db`,
+   `laytime-backend`, `laytime-frontend`) — click **Apply**.
+4. Espera a que los 3 terminen de construirse (unos minutos la primera vez).
+5. Abre la URL de `laytime-frontend` (algo como `https://laytime-frontend.onrender.com`)
+   — esa es la app.
+
+Notas del plan gratuito de Render: los servicios se "duermen" tras ~15 min sin uso
+(la primera carga tras eso tarda 30-60s en despertar) y la base de datos gratuita
+expira a los 90 días — para uso real conviene pasar a un plan pago antes de eso.
+
 ## Correr localmente
 
 ### Requisitos
@@ -72,11 +93,12 @@ pytest tests/unit -v
 ```bash
 cd frontend
 npm install
-cp .env.local.example .env.local   # o crea .env.local con NEXT_PUBLIC_API_URL
 npm run dev
 ```
 
-Abre http://localhost:3000.
+Abre http://localhost:3000 — por defecto ya apunta al backend en `localhost:8000`
+(no necesitas configurar nada; ver `.env.local.example` si el backend corre en otro
+puerto/host).
 
 ### Con Docker Compose (Postgres + backend + frontend)
 

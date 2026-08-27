@@ -1,0 +1,41 @@
+databases:
+  - name: laytime-db
+    plan: free
+    databaseName: laytime
+    user: laytime
+
+services:
+  - type: web
+    name: laytime-backend
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: LAYTIME_DATABASE_URL
+        fromDatabase:
+          name: laytime-db
+          property: connectionString
+      - key: LAYTIME_STORAGE_DIR
+        value: /app/var/storage
+      - key: LAYTIME_CORS_ORIGINS
+        value: '["*"]'
+    disk:
+      name: laytime-storage
+      mountPath: /app/var/storage
+      sizeGB: 1
+
+  - type: web
+    name: laytime-frontend
+    runtime: docker
+    plan: free
+    rootDir: frontend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: BACKEND_HOST
+        fromService:
+          type: web
+          name: laytime-backend
+          property: host

@@ -6,7 +6,10 @@ import type {
   Voyage,
 } from "./types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+// Defaults to same-origin "/api", proxied server-side to the backend via the
+// rewrite in next.config.ts (see BACKEND_URL there). Set NEXT_PUBLIC_API_URL only
+// for local dev if you want the browser to hit the backend directly instead.
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "/api";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
