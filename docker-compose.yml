@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: laytime
+      POSTGRES_PASSWORD: laytime_dev_pw
+      POSTGRES_DB: laytime
+    ports:
+      - "5432:5432"
+    volumes:
+      - laytime_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U laytime"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      LAYTIME_DATABASE_URL: postgresql+psycopg://laytime:laytime_dev_pw@db:5432/laytime
+      LAYTIME_STORAGE_DIR: /app/var/storage
+      LAYTIME_CORS_ORIGINS: '["http://localhost:3000"]'
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - laytime_storage:/app/var/storage
+
+  frontend:
+    build: ./frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  laytime_db_data:
+  laytime_storage:
