@@ -21,10 +21,10 @@ services:
         value: /app/var/storage
       - key: LAYTIME_CORS_ORIGINS
         value: '["*"]'
-    disk:
-      name: laytime-storage
-      mountPath: /app/var/storage
-      sizeGB: 1
+    # Render's free plan doesn't support persistent disks, so uploaded documents
+    # live on the container's ephemeral filesystem — they're lost on redeploy or
+    # restart. Fine for a demo; for real use, either upgrade to a paid plan with a
+    # disk, or swap app/infrastructure/storage/local.py for an S3-compatible client.
 
   - type: web
     name: laytime-frontend

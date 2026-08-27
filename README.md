@@ -55,9 +55,16 @@ necesarios (Postgres + backend + frontend) para que Render los cree juntos. Paso
 5. Abre la URL de `laytime-frontend` (algo como `https://laytime-frontend.onrender.com`)
    — esa es la app.
 
-Notas del plan gratuito de Render: los servicios se "duermen" tras ~15 min sin uso
-(la primera carga tras eso tarda 30-60s en despertar) y la base de datos gratuita
-expira a los 90 días — para uso real conviene pasar a un plan pago antes de eso.
+Notas del plan gratuito de Render:
+- Los servicios se "duermen" tras ~15 min sin uso (la primera carga tras eso tarda
+  30-60s en despertar).
+- La base de datos gratuita expira a los 90 días.
+- Los documentos subidos (PDFs de SOF) viven en disco efímero del contenedor — se
+  pierden si el servicio se reinicia o redeploya (el plan gratuito no soporta discos
+  persistentes). Los voyages, eventos SOF y cálculos sí persisten (viven en Postgres).
+
+Para uso real conviene pasar a un plan pago (permite disco persistente y evita el
+"sleep").
 
 ## Correr localmente
 
